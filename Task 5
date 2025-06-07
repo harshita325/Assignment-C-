@@ -1,0 +1,58 @@
+WITH ContestDates AS (
+    SELECT DATE '2016-03-01' AS contest_day UNION ALL
+    SELECT DATE '2016-03-02' UNION ALL
+    SELECT DATE '2016-03-03' UNION ALL
+    SELECT DATE '2016-03-04'
+),
+DailyUniqueHackers AS (
+    SELECT
+        s.submission_date,
+        COUNT(DISTINCT s.hacker_id) AS total_unique_hackers
+    FROM
+        Submissions s
+    GROUP BY
+        s.submission_date
+),
+HackerDailySubmissions AS (
+    SELECT
+        submission_date,
+        hacker_id,
+        COUNT(submission_id) AS submission_count
+    FROM
+        Submissions
+    GROUP BY
+        submission_date, hacker_id
+),
+RankedHackerSubmissions AS (
+    SELECT
+        submission_date,
+        hacker_id,
+        submission_count,
+        ROW_NUMBER() OVER (PARTITION BY submission_date ORDER BY submission_count DESC, hacker_id ASC) as rn
+    FROM
+        HackerDailySubmissions
+),
+MaxSubmissionHacker AS (
+    SELECT
+        submission_date,
+        hacker_id AS max_hacker_id
+    FROM
+        RankedHackerSubmissions
+    WHERE
+        rn = 1
+)
+SELECT
+    cd.contest_day AS submission_date,
+    COALESCE(duh.total_unique_hackers, 0) AS total_unique_hackers,
+    ms.max_hacker_id,
+    h.name
+FROM
+    ContestDates cd
+LEFT JOIN
+    DailyUniqueHackers duh ON cd.contest_day = duh.submission_date
+LEFT JOIN
+    MaxSubmissionHacker ms ON cd.contest_day = ms.submission_date
+LEFT JOIN
+    Hackers h ON ms.max_hacker_id = h.hacker_id
+ORDER BY
+    cd.contest_day;
