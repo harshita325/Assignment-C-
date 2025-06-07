@@ -1,0 +1,15 @@
+-- Option 1: If DestinationTable is empty or you want to completely overwrite its contents
+-- (Use with caution as this will delete all existing data in DestinationTable)
+-- TRUNCATE TABLE DestinationTable; -- Resets table and quickly deletes all rows.
+-- OR
+-- DELETE FROM DestinationTable;    -- Deletes rows one by one, logs transactions.
+
+INSERT INTO DestinationTable (column1, column2, column3, ...)
+SELECT column1, column2, column3, ...
+FROM SourceTable;
+
+-- Option 2: If you want to copy all columns and the table structures are identical
+-- (More concise if all columns are to be copied in the same order)
+INSERT INTO DestinationTable
+SELECT *
+FROM SourceTable;
