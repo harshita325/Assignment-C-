@@ -1,0 +1,3 @@
+CREATE LOGIN [NewUserLogin] WITH PASSWORD = 'YourStrongPassword123!';
+CREATE USER [NewUserUser] FOR LOGIN [NewUserLogin];
+ALTER ROLE db_owner ADD MEMBER [NewUserUser]; -- Granting db_owner is a very high privilege, use with caution.
