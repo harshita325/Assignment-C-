@@ -1,0 +1,12 @@
+
+SELECT
+    job_family,
+    (SUM(CASE WHEN country = 'India' THEN total_cost ELSE 0 END) * 100.0 / SUM(total_cost)) AS India_Cost_Percentage,
+    (SUM(CASE WHEN country <> 'India' THEN total_cost ELSE 0 END) * 100.0 / SUM(total_cost)) AS International_Cost_Percentage
+FROM
+    EmployeeCosts
+GROUP BY
+    job_family
+ORDER BY
+    job_family;
+
