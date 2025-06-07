@@ -1,0 +1,16 @@
+
+SELECT
+    bu_id,
+    STRFTIME('%Y-%m', financial_date) AS month, -- For SQLite; use DATE_FORMAT(financial_date, '%Y-%m') for MySQL, TO_CHAR(financial_date, 'YYYY-MM') for PostgreSQL/Oracle
+    CASE
+        WHEN SUM(total_revenue) > 0 THEN SUM(total_cost) * 1.0 / SUM(total_revenue)
+        ELSE NULL -- Handle division by zero
+    END AS Cost_Revenue_Ratio
+FROM
+    BU_Financials
+GROUP BY
+    bu_id,
+    STRFTIME('%Y-%m', financial_date) -- Group by the extracted month
+ORDER BY
+    bu_id,
+    month;
