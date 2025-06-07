@@ -1,0 +1,15 @@
+-- For Task 7
+WITH RECURSIVE Numbers AS (
+    SELECT 2 AS n
+    UNION ALL
+    SELECT n + 1 FROM Numbers WHERE n < 1000
+)
+SELECT GROUP_CONCAT(n SEPARATOR '&')
+FROM Numbers
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Numbers AS Divisors
+    WHERE Divisors.n < Numbers.n
+      AND Divisors.n > 1
+      AND Numbers.n % Divisors.n = 0
+);
