@@ -1,0 +1,3 @@
+UPDATE YourTable
+SET ColumnA = ColumnB,
+    ColumnB = ColumnA;
